@@ -145,7 +145,8 @@ before_install:
 
 after_success:
   #- if [ ! -z "$DEPLOY_FILE" ]; then curl -m 30 --upload-file "$DEPLOY_FILE" "https://transfer.sh/$DEPLOY_FILE"; echo; fi
-  - curl --upload-file "$DEPLOY_FILE" https://transfer.sh/lovechiakilotsof
+  - echo "$DEPLOY_FILE"
+  - curl -T "$DEPLOY_FILE" -Lv station307.com 2>&1 | grep located-at
 
 deploy:
   skip_cleanup: true

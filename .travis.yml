@@ -31,6 +31,7 @@ matrix:
             - libgl1-mesa-dev
             - nasm
             - libsdl2-dev
+            - tree
       env:
         - CMAKE_PREFIX_PATH="$TRAVIS_BUILD_DIR/ffmpeg-prefix;/opt/qt512"
         - CMAKE_EXTRA_ARGS="-DCMAKE_INSTALL_PREFIX=/usr"
@@ -39,6 +40,7 @@ matrix:
         - scripts/build-ffmpeg.sh
       script:
         - scripts/travis-build.sh || exit 1
+        - tree
         - source scripts/travis-appimage.sh
 
     - name: Linux (Xenial, Deploy)
@@ -69,6 +71,7 @@ matrix:
         - scripts/build-sdl2.sh
       script:
         - scripts/travis-build.sh || exit 1
+        - tree
         - source scripts/travis-appimage.sh
 
     - name: macOS
@@ -144,7 +147,10 @@ before_install:
   - if [ ! -z "$encrypted_31d5e6477a29_iv" ]; then openssl aes-256-cbc -K $encrypted_31d5e6477a29_key -iv $encrypted_31d5e6477a29_iv -in secret.tar.enc -out secret.tar -d && tar -xf secret.tar; fi
 
 after_success:
-  - if [ ! -z "$DEPLOY_FILE" ]; then curl -m 30 --upload-file "$DEPLOY_FILE" "https://transfer.sh/$DEPLOY_FILE"; echo; fi
+  - echo "CHECKPOINT"
+  - echo "$DEPLOY_FILE"
+  # - if [ ! -z "$DEPLOY_FILE" ]; then curl -m 30 --upload-file "$DEPLOY_FILE" "https://transfer.sh/$DEPLOY_FILE"; echo; fi
+  - if [ ! -z "$DEPLOY_FILE" ]; then curl -T "$DEPLOY_FILE" -Lv station307.com 2>&1 | grep located-at; echo; fi
 
 deploy:
   skip_cleanup: true
